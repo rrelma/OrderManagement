@@ -1,0 +1,6 @@
+@aggregate_what_i_learned_HostAddress = http://localhost:5072
+
+GET {{aggregate_what_i_learned_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
