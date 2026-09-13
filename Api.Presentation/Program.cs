@@ -24,7 +24,7 @@ builder.Services.AddScoped<StripePaymentAdapter>();
 builder.Services.AddScoped<PayPalPaymentAdapter>();
 
 // Register Factory
-builder.Services.AddSingleton<IPaymentGatewayFactory, PaymentGatewayFactory>();
+builder.Services.AddScoped<IPaymentGatewayFactory, PaymentGatewayFactory>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
