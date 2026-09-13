@@ -8,8 +8,8 @@ namespace Application.Interfaces
 {
     public record CreateOrderCommand(Guid CustomerId, decimal Amount, string Currency);
 
-    public interface ICreateOrderUseCase
+    public interface ICreateOrderCommandHandler
     {
-        Task<Guid> ExecuteAsync(CreateOrderCommand command, CancellationToken ct = default);
+        Task<Guid> HandleAsync(CreateOrderCommand command, CancellationToken ct = default);
     }
 }
