@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public record CreateOrderCommand(Guid CustomerId, decimal Amount, string Currency);
+    public record CreateOrderCommand(
+        Guid CustomerId,
+        decimal Amount,
+        string Currency,
+        string? DiscountType,   // "Percentage", "Flat", or null
+        decimal? DiscountValue, // e.g., 10 for 10%
+        string PaymentProvider  // "Stripe" or "PayPal"
+    );
 
     public interface ICreateOrderCommandHandler
     {

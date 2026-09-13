@@ -1,5 +1,7 @@
 using Application.Interfaces;
+using Infrastructure.Factories;
 using Infrastructure.Implementation;
+using Infrastructure.Payment;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,12 @@ builder.Services.AddSingleton<IOrderReadRepository>(inMemoryRepo);
 builder.Services.AddScoped<ICreateOrderCommandHandler, CreateOrderCommandHandler>();
 builder.Services.AddScoped<IGetOrderByIdQueryHandler, GetOrderByIdQueryHandler>();
 
+// Register Payment Adapters
+builder.Services.AddScoped<StripePaymentAdapter>();
+builder.Services.AddScoped<PayPalPaymentAdapter>();
+
+// Register Factory
+builder.Services.AddSingleton<IPaymentGatewayFactory, PaymentGatewayFactory>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

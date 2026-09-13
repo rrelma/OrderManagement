@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Strategies;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,6 +39,12 @@ namespace Domain.Entities
                 throw new InvalidOperationException("Only pending orders can be marked as paid.");
 
             Status = "Paid";
+        }
+
+        public void ApplyDiscount(IDiscountStrategy discountStrategy)
+        {
+            var discountedAmount = discountStrategy.ApplyDiscount(TotalAmount.Amount);
+            TotalAmount = new Money(discountedAmount, TotalAmount.Currency);
         }
     }
 }
