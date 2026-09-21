@@ -1,4 +1,6 @@
-﻿using Domain.Strategies;
+﻿using Domain.Events;
+using Domain.States;
+using Domain.Strategies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +11,14 @@ namespace Domain.Entities
 {
     public class Order
     {
+
+        private readonly List<IDomainEvent> _domainEvents = new();
+
         public Guid Id { get; }
         public Guid CustomerId { get; }
         public Money TotalAmount { get; private set; }
-        public string Status { get; private set; }
-        public DateTime CreatedAt { get; }
+        public IOrderState State { get; private set; }
+        public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         public Order(Guid customerId, string currency)
         {
@@ -23,8 +28,10 @@ namespace Domain.Entities
             Id = Guid.NewGuid();
             CustomerId = customerId;
             TotalAmount = new Money(0, currency);
-            Status = "Pending";
-            CreatedAt = DateTime.UtcNow;
+            State = new PendingOrderState(); // Initial State
+
+            // Raise Domain Event
+            _domainEvents.Add(new OrderPlacedDomainEvent(Id, CustomerId, TotalAmount.Amount));
         }
 
         public void AddItem(decimal price, string currency)
@@ -33,12 +40,9 @@ namespace Domain.Entities
             TotalAmount = TotalAmount.Add(itemPrice);
         }
 
-        public void MarkAsPaid()
+        public void TransitionToState(IOrderState newState)
         {
-            if (Status != "Pending")
-                throw new InvalidOperationException("Only pending orders can be marked as paid.");
-
-            Status = "Paid";
+            State = newState;
         }
 
         public void ApplyDiscount(IDiscountStrategy discountStrategy)
@@ -46,5 +50,11 @@ namespace Domain.Entities
             var discountedAmount = discountStrategy.ApplyDiscount(TotalAmount.Amount);
             TotalAmount = new Money(discountedAmount, TotalAmount.Currency);
         }
+
+        public void MarkAsPaid() => State.Pay(this);
+        public void Ship() => State.Ship(this);
+        public void Cancel() => State.Cancel(this);
+
+        public void ClearDomainEvents() => _domainEvents.Clear();
     }
 }

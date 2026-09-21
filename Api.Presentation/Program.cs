@@ -1,4 +1,7 @@
 using Application.Interfaces;
+using Application.Observers;
+using Domain.Events;
+using Infrastructure.Dispatchers;
 using Infrastructure.Factories;
 using Infrastructure.Implementation;
 using Infrastructure.Payment;
@@ -14,6 +17,12 @@ var inMemoryRepo = new InMemoryOrderRepository();
 builder.Services.AddSingleton<IOrderRepository>(inMemoryRepo);
 builder.Services.AddSingleton<IOrderReadRepository>(inMemoryRepo);
 
+// Register Dispatcher
+builder.Services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+
+// Register Observers for OrderPlacedDomainEvent
+builder.Services.AddScoped<IDomainEventHandler<OrderPlacedDomainEvent>, OrderPlacedNotificationHandler>();
+builder.Services.AddScoped<IDomainEventHandler<OrderPlacedDomainEvent>, InventoryReservationHandler>();
 
 // Handlers
 builder.Services.AddScoped<ICreateOrderCommandHandler, CreateOrderCommandHandler>();

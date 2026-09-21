@@ -13,13 +13,16 @@ namespace Infrastructure.Implementation
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IPaymentGatewayFactory _paymentGatewayFactory;
+        private readonly IDomainEventDispatcher _domainEventDispatcher;
 
         public CreateOrderCommandHandler(
             IOrderRepository orderRepository,
-            IPaymentGatewayFactory paymentGatewayFactory)
+            IPaymentGatewayFactory paymentGatewayFactory,
+            IDomainEventDispatcher domainEventDispatcher)
         {
             _orderRepository = orderRepository;
             _paymentGatewayFactory = paymentGatewayFactory;
+            _domainEventDispatcher = domainEventDispatcher;
         }
 
         public async Task<Guid> HandleAsync(CreateOrderCommand command, CancellationToken ct = default)
@@ -49,8 +52,15 @@ namespace Infrastructure.Implementation
                 throw new InvalidOperationException($"Payment failed via provider: {command.PaymentProvider}");
             }
 
+            // State Pattern Transition
+            order.MarkAsPaid();
+
             // 4. Save to Repository
             await _orderRepository.SaveAsync(order, ct);
+
+            // Observer Pattern: Dispatch Domain Events to Observers
+            await _domainEventDispatcher.DispatchAsync(order.DomainEvents, ct);
+            order.ClearDomainEvents();
 
             return order.Id;
         }
