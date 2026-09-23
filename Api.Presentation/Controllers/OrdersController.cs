@@ -29,8 +29,8 @@ namespace Api.Presentation.Controllers
         [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetOrderById(Guid id, CancellationToken ct)
     {
-        var query = new GetOrderByIdQuery(id);
-        var order = await _getOrderByIdHandler.HandleAsync(query, ct);
+        //var query = new GetOrderByIdQuery(id);
+        var order = await _getOrderByIdHandler.HandleAsync(id, ct);
 
         if (order == null) return NotFound();
 

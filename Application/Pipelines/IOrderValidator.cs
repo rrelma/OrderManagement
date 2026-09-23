@@ -1,0 +1,15 @@
+﻿using Application.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Pipelines
+{
+    public interface IOrderValidator
+    {
+        IOrderValidator SetNext(IOrderValidator next);
+        Task ValidateAsync(CreateOrderCommand command, CancellationToken ct = default);
+    }
+}

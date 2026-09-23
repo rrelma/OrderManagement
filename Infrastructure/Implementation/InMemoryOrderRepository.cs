@@ -31,7 +31,7 @@ namespace Infrastructure.Implementation
                 order.CustomerId,
                 order.TotalAmount.Amount,
                 order.TotalAmount.Currency,
-                order.Status.ToString(),
+                order.State.ToString(),
                 DateTime.UtcNow
             );
 

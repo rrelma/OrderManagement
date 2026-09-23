@@ -11,6 +11,6 @@ namespace Application.Interfaces
 
     public interface IGetOrderByIdQueryHandler
     {
-        Task<OrderDetailsDto?> HandleAsync(GetOrderByIdQuery query, CancellationToken ct = default);
+        Task<OrderDetailsDto?> HandleAsync(Guid orderId, CancellationToken ct = default);
     }
 }

@@ -5,13 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Threading;
 
-namespace Infrastructure.Implementation
+namespace Application.Implementation
 {
     public class GetOrderByIdQueryHandler : IGetOrderByIdQueryHandler
     {
-        private readonly IOrderReadRepository _readRepository; // Or direct Dapper / DbContext
+        private readonly IOrderReadRepository _readRepository;
 
         public GetOrderByIdQueryHandler(IOrderReadRepository readRepository)
         {
@@ -20,6 +19,7 @@ namespace Infrastructure.Implementation
 
         public async Task<OrderDetailsDto?> HandleAsync(Guid orderId, CancellationToken ct = default)
         {
+            Console.WriteLine($"[DATABASE] Fetching Order {orderId} from persistence store...");
             return await _readRepository.GetByIdAsync(orderId, ct);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Pipelines;
 using Domain.Entities;
 using Infrastructure.Factories;
 using System;
@@ -14,19 +15,24 @@ namespace Infrastructure.Implementation
         private readonly IOrderRepository _orderRepository;
         private readonly IPaymentGatewayFactory _paymentGatewayFactory;
         private readonly IDomainEventDispatcher _domainEventDispatcher;
+        private readonly IOrderValidator _validatorPipeline;
 
         public CreateOrderCommandHandler(
             IOrderRepository orderRepository,
             IPaymentGatewayFactory paymentGatewayFactory,
-            IDomainEventDispatcher domainEventDispatcher)
+            IDomainEventDispatcher domainEventDispatcher,
+            IOrderValidator validatorPipeline)
         {
             _orderRepository = orderRepository;
             _paymentGatewayFactory = paymentGatewayFactory;
             _domainEventDispatcher = domainEventDispatcher;
+            _validatorPipeline = validatorPipeline;
         }
 
         public async Task<Guid> HandleAsync(CreateOrderCommand command, CancellationToken ct = default)
         {
+            await _validatorPipeline.ValidateAsync(command, ct);
+         
             // 1. Create Aggregate Root
             var order = new Order(command.CustomerId, command.Currency);
             order.AddItem(command.Amount, command.Currency);
