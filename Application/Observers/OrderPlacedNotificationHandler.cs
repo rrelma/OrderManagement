@@ -10,10 +10,17 @@ namespace Application.Observers
 {
     public class OrderPlacedNotificationHandler : IDomainEventHandler<OrderPlacedDomainEvent>
     {
-        public Task HandleAsync(OrderPlacedDomainEvent domainEvent, CancellationToken ct = default)
+        private readonly IEmailNotificationService _emailService;
+        public OrderPlacedNotificationHandler(IEmailNotificationService emailService)
         {
-            Console.WriteLine($"[NOTIFICATION OBSERVER] Sending confirmation email for Order: {domainEvent.OrderId}");
-            return Task.CompletedTask;
+            _emailService = emailService;
+        }
+        public async Task HandleAsync(OrderPlacedDomainEvent domainEvent, CancellationToken ct = default)
+        {
+            string subject = $"Order Confirmation #{domainEvent.OrderId}";
+            string body = $"Thank you for your order! Total amount charged: {domainEvent.TotalAmount:C}";
+
+            await _emailService.SendEmailAsync("customer@example.com", subject, body, ct);
         }
     }
 }
