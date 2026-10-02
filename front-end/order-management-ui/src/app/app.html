@@ -1,0 +1,38 @@
+<div class="min-h-screen bg-gray-100 font-sans text-gray-900">
+  
+  <!-- Navigation Header -->
+  <header class="bg-slate-900 text-white shadow-md">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white">
+          E
+        </div>
+        <h1 class="text-xl font-bold tracking-tight">Enterprise Orders</h1>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex gap-4">
+        <a 
+          routerLink="/create" 
+          routerLinkActive="bg-blue-600 text-white" 
+          class="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition"
+        >
+          New Order
+        </a>
+        <a 
+          routerLink="/orders" 
+          routerLinkActive="bg-blue-600 text-white" 
+          class="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition"
+        >
+          Order Registry
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Router Outlet Container -->
+  <main class="max-w-6xl mx-auto py-8 px-4">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>
